@@ -9,6 +9,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	zh2 "github.com/go-playground/validator/v10/translations/zh"
+	"reflect"
 	"strings"
 )
 
@@ -24,6 +25,10 @@ func RegisterTranslations(r *gin.Engine) error {
 		if !ok {
 			return fmt.Errorf("uni.GetTranslator(%s)", "zh")
 		}
+		v.RegisterTagNameFunc(func(field reflect.StructField) string {
+			splitN := strings.SplitN(field.Tag.Get("json"), ",", -1)
+			return splitN[0]
+		})
 		zh2.RegisterDefaultTranslations(v, Translator)
 
 	}
