@@ -27,7 +27,13 @@ func RegisterTranslations(r *gin.Engine) error {
 		}
 		v.RegisterTagNameFunc(func(field reflect.StructField) string {
 			splitN := strings.SplitN(field.Tag.Get("json"), ",", -1)
-			return splitN[0]
+			if len(splitN) == 0 {
+				splitN = strings.SplitN(field.Tag.Get("form"), ",", -1)
+			}
+			if len(splitN) > 0 {
+				return splitN[0]
+			}
+			return field.Name
 		})
 		zh2.RegisterDefaultTranslations(v, Translator)
 
