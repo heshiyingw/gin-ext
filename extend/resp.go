@@ -29,16 +29,14 @@ func SendParamError(ctx *gin.Context, err error) {
 		})
 		return
 	}
-	//errInos := make([]string, 0, len(errs))
-	builder := strings.Builder{}
+	errInfos := make([]string, 0, len(errs))
 	for _, e := range errs {
 		errInfo := e.Translate(Translator)
-
-		builder.WriteString(fmt.Sprintf("%v:%v", e.Field(), errInfo))
+		errInfos = append(errInfos, fmt.Sprintf("%v:%v", e.Field(), errInfo))
 	}
 	ctx.JSON(http.StatusBadRequest, Resp{
 		Success: false,
-		Msg:     builder.String(),
+		Msg:     strings.Join(errInfos, ","),
 		Data:    nil,
 		Code:    0,
 	})
