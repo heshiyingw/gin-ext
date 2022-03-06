@@ -1,11 +1,9 @@
 package extend
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
-	"strings"
 )
 
 type Resp struct {
@@ -19,24 +17,13 @@ func SendData(ctx *gin.Context, res Resp) {
 	ctx.JSON(http.StatusOK, res)
 }
 func SendParamError(ctx *gin.Context, err error) {
-	errs, ok := err.(validator.ValidationErrors)
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, Resp{
-			Success: false,
-			Msg:     err.Error(),
-			Data:    nil,
-			Code:    0,
-		})
-		return
-	}
-	errInfos := make([]string, 0, len(errs))
-	for _, e := range errs {
-		errInfo := e.Translate(Translator)
-		errInfos = append(errInfos, fmt.Sprintf("%v:%v", e.Field(), errInfo))
+	errInfo := err.Error()
+	if errs, ok := err.(validator.ValidationErrors); ok {
+		errInfo = getErrorInfo(errs)
 	}
 	ctx.JSON(http.StatusBadRequest, Resp{
 		Success: false,
-		Msg:     strings.Join(errInfos, ","),
+		Msg:     errInfo,
 		Data:    nil,
 		Code:    0,
 	})

@@ -9,6 +9,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	zh2 "github.com/go-playground/validator/v10/translations/zh"
+	"strings"
 )
 
 var Translator ut.Translator
@@ -27,4 +28,12 @@ func RegisterTranslations(r *gin.Engine) error {
 
 	}
 	return nil
+}
+func getErrorInfo(errs validator.ValidationErrors) string {
+	errInfos := make([]string, 0, len(errs))
+	for _, e := range errs {
+		errInfo := e.Translate(Translator)
+		errInfos = append(errInfos, fmt.Sprintf("%v:%v", e.Field(), errInfo))
+	}
+	return strings.Join(errInfos, ",")
 }
