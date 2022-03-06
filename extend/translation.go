@@ -27,7 +27,7 @@ func RegisterTranslations(r *gin.Engine) error {
 		}
 		v.RegisterTagNameFunc(func(field reflect.StructField) string {
 			splitN := strings.SplitN(field.Tag.Get("json"), ",", -1)
-			if len(splitN) == 0 {
+			if len(splitN) == 0 || (len(splitN) == 1 && splitN[0] == "") {
 				splitN = strings.SplitN(field.Tag.Get("form"), ",", -1)
 			}
 			if len(splitN) > 0 {
