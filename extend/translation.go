@@ -38,7 +38,8 @@ func getErrorInfo(errs validator.ValidationErrors) string {
 	errInfos := make([]string, 0, len(errs))
 	for _, e := range errs {
 		errInfo := e.Translate(Translator)
-		errInfos = append(errInfos, fmt.Sprintf("%v:%v", e.Field(), errInfo))
+
+		errInfos = append(errInfos, fmt.Sprintf("%v:%v", strings.Join(strings.Split(e.Namespace(), ".")[1:], "."), errInfo))
 	}
 	return strings.Join(errInfos, ",")
 }
